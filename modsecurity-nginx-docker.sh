@@ -1,0 +1,71 @@
+#!/bin/sh
+# owasp modsecurity-nginx
+# docker container stop modsecurity-nginx; docker container rm modsecurity-nginx
+
+docker run -d --name=modsecurity-nginx \
+ --restart=unless-stopped \
+ --net=host \
+ --hostname=plex --domainname=YOURDOMAIN.com \
+ --no-healthcheck=true \
+ -v /etc/timezone:/etc/timezone:ro \
+ -v /etc/ssl/private/:/etc/ssl/private:ro \
+ -v /home/dockers/configs/modsecurity-nginx/config:/config \
+ -v /home/dockers/configs/modsecurity-nginx/etc/nginx/templates/conf.d:/etc/nginx/templates/conf.d/ \
+ -v /mnt/ramdisk/modsecurity-nginx/logs:/var/log/nginx \
+ -v /mnt/ramdisk/modsecurity-nginx/logs:/logs \
+ -v /mnt/ramdisk/modsecurity-nginx:/ramdisk \
+ -v /mnt/ramdisk/modsecurity-nginx/tmp:/tmp \
+ -e TZ="America/Denver" -e PUID=1001 -e PGID=100 \
+ -e DNS_SERVER="8.8.8.8" \
+ -e ACCESSLOG="/var/log/nginx/access.log" \
+ -e ERRORLOG="/var/log/nginx/error.log" \
+ -e PROXY_SSL_CERT="/etc/ssl/private/fullchain.pem" \
+ -e PROXY_SSL_CERT_KEY="/etc/ssl/private/privkey.pem" \
+ -e HEALTHCHECK=none \
+ -e WORKER_CONNECTIONS=1024 \
+ -e NGINX_ALWAYS_TLS_REDIRECT=on \
+ -e PARANOIA=1 \
+ -e BLOCKING_PARANOIA=1 \
+ -e EXECUTING_PARANOIA=1 \
+ -e DETECTION_PARANOIA=1 \
+ -e ENFORCE_BODYPROC_URLENCODED=1 \
+ -e VALIDATE_UTF8_ENCODING=1 \
+ -e ANOMALY_INBOUND=10 \
+ -e ANOMALYIN=10 \
+ -e ANOMALY_OUTBOUND=10 \
+ -e ANOMALYOUT=10 \
+ -e SECAUDITENGINE=RelevantOnly \
+ -e MODSEC_AUDIT_ENGINE=RelevantOnly \
+ -e MAX_NUM_ARGS=512 \
+ -e ARG_NAME_LENGTH=512 \
+ -e ARG_LENGTH=512 \
+ -e ARGS_COMBINED_SIZE=5824 \
+ -e TOTAL_ARG_LENGTH=5824 \
+ -e MAX_FILE_SIZE=20480 \
+ -e COMBINED_FILE_SIZES=20480 \
+ -e SERVER_NAME=plex.YOURDOMAIN.com \
+ -e TIMEOUT=99 \
+ -e PROXY_TIMEOUT=99 \
+ -e LOGLEVEL=warn \
+ -e MODSEC_RULE_ENGINE=on \
+ -e MODSEC_REQ_BODY_ACCESS=on \
+ -e MODSEC_REQ_BODY_LIMIT=13107 \
+ -e MODSEC_REQ_BODY_NOFILES_LIMIT=13107 \
+ -e MODSEC_RESP_BODY_ACCESS=on \
+ -e MODSEC_RESP_BODY_LIMIT=1048576 \
+ -e MODSEC_PCRE_MATCH_LIMIT=100000 \
+ -e MODSEC_PCRE_MATCH_LIMIT_RECURSION=100000 \
+ -e CRS_ENABLE_TEST_MARKER=1 \
+ -e MODSEC_RESP_BODY_MIMETYPE='text/plain text/html text/xml application/json application/xml' \
+ -e MODSEC_AUDIT_STORAGE='/ramdisk/audit' \
+ -e MODSEC_TMP_DIR='/ramdisk/tmp' \
+ -e MODSEC_UPLOAD_DIR='/ramdisk/uploads' \
+ -e MODSEC_AUDIT_LOG='/logs/modsec_audit.log' \
+ -e MODSEC_DEBUG_LOG='/logs/modsec_debug.log' \
+ -e PROXY=1 \
+ -e PROXY_SSL=on \
+ -e ALLOWED_HTTP_VERSIONS='HTTP/1.1 HTTP/2 HTTP/2.0' \
+ -e ALLOWED_METHODS='GET HEAD POST OPTIONS PUT' \
+ -v /home/dockers/configs/modsecurity-nginx/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf \
+ -v /home/dockers/configs/modsecurity-nginx/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf \
+ owasp/modsecurity-crs:nginx
