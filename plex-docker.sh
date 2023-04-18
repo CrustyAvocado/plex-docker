@@ -26,6 +26,7 @@ docker run -d --name=plex \
  -v /mnt/ramdisk:/transcode \
  -v /etc/timezone:/etc/timezone:ro \
  -v /etc/ssl/private/:/etc/ssl/private:ro \
+ -v /mnt/ramdisk/plex/Logs:'/config/Library/Application Support/Plex Media Server/Logs' \
  -l LAN_NETWORKS='192.168.11.0/23' \
  -l ALLOWED_NETWORKS='192.168.11.0/23' \
  linuxserver/plex:latest
