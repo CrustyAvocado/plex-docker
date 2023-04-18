@@ -5,8 +5,8 @@
 
     ## default server deny
     server {
-        listen 32400 ssl http2;
-        listen [::]:32400 ssl http2;
+        listen 32404 ssl http2;
+        listen [::]:32404 ssl http2;
         server_name _
                     ""
                     default
@@ -32,11 +32,11 @@
 
     ## plex server
     server {
-        listen 32400 ssl http2;
-        listen [::]:32400 ssl http2;
+        listen 32404 ssl http2;
+        listen [::]:32404 ssl http2;
         server_name plex.YOURDOMAIN.com
                     .plex.direct;
-        set $plex https://192.168.2.20:32400;
+        set $plex https://IP.ADDRESS.OF.YOUR.PLEX.SERVER:32400;
         
         modsecurity on;
         modsecurity_rules_file /etc/modsecurity.d/setup.conf;
